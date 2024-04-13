@@ -6,25 +6,25 @@ const datosRedNeuronal = {
         pesos: [
             [0.5, -1, 0.7],
             [0.3, 0.2, 0.8],
-            [1, 0.1, 0.9]
+            [1, 0.1, 0.9],
         ],
-        umbrales: [0.5, 0.6, 1]
+        umbrales: [0.5, 0.6, 1],
     },
     capa1: {
         pesos: [
             [0.2, 0.1],
             [0.3, 0.4],
-            [1, -1]
+            [1, -1],
         ],
-        umbrales: [0.1, -0.1]
+        umbrales: [0.1, -0.1],
     },
     capa2: {
         pesos: [
             [0.9, 0.4],
-            [0.1, 0.5]
+            [0.1, 0.5],
         ],
-        umbrales: [-0.7, 1]
-    }
+        umbrales: [-0.7, 1],
+    },
 };
 let errorV = [];
 const m = 3;
@@ -35,7 +35,11 @@ let errorNo = [];
    [0.3, 0.2, W0.5],
    [1, 0.1, 0.9]]
  */
-const WC1_C2 = [[0.2, 0.1], [0.3, 0.4], [1, -1]];
+const WC1_C2 = [
+    [0.2, 0.1],
+    [0.3, 0.4],
+    [1, -1],
+];
 const U2 = [0.1, -0.1];
 const NumC2 = 2;
 /**
@@ -47,15 +51,18 @@ const NumC2 = 2;
    [0.1, 0.5]]
  *
  */
-const WC2_S = [[0.9, 0.4], [0.1, 0.5]];
+const WC2_S = [
+    [0.9, 0.4],
+    [0.1, 0.5],
+];
 const U3 = [-0.7, 1];
 const NumS = 2;
 // estoy construyenfo el algoritmo de backPropagation ayudame en la logica
 const funcio_Act = {
-    "sigmoide": 1,
-    "tanh": 2,
-    "seno": 3,
-    "lineal": 4,
+    sigmoide: 1,
+    tanh: 2,
+    seno: 3,
+    lineal: 4,
 };
 const vectorFuncio = [1, 2, 3];
 // Funcion que hace el calculo de la funcion de activacion
@@ -64,7 +71,7 @@ const Hi = (X, U1, Pesos, entrada, capa_Act, funcion) => {
     for (let i = 0; i < capa_Act; i++) {
         let h1 = 0;
         for (let j = 0; j < entrada; j++) {
-            h1 += (X[j] * (Pesos[j][i]));
+            h1 += X[j] * Pesos[j][i];
         }
         h1 = h1 - U1[i];
         h1 = (0, funtions_activation_1.funcion_d)(funcion, h1);
@@ -86,27 +93,38 @@ const main = (capas) => {
     let vectorYd = [];
     let x = vector;
     let errorLineal = [];
-    const patrones = [[1, 0, 1], [0, 1, 1], [1, 0, 1], [0, 1, 0]];
-    const yd = [[0, 0], [0, 1], [1, 0], [1, 1]];
+    const patrones = [
+        [1, 0, 1],
+        [0, 1, 1],
+        [1, 0, 1],
+        [0, 1, 0],
+    ];
+    const yd = [
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1],
+    ];
     for (let i = 0; i < patrones.length; i++) {
         errorLineal = [];
         for (let j = 0; j < m; j++) {
             vector[j] = patrones[i][j]; // presentar patron por patron
         }
         for (let k = 0; k < n; k++) {
-            vectorYd[k] = yd[i][k]; // salidas esperadas 
+            vectorYd[k] = yd[i][k]; // salidas esperadas
         }
         console.log("patron presentado: ", vector);
         console.log("Salida esperada", vectorYd);
         let x = vector;
         let y = 0;
-        // progreso entre las capas 
-        capas.forEach(capa => {
+        // progreso entre las capas
+        capas.forEach((capa) => {
             console.log("x: ", capa.pesos);
             console.log("u: ", capa.umbrales);
             const salida = Hi(x, capa.umbrales, capa.pesos, x.length, capa.umbrales.length, vectorFuncio[y]);
             console.log("salida: ", salida);
             console.log("entradas: ", x.length);
+            console.log("hola leo");
             x = salida;
             y++;
         });

@@ -1,11 +1,14 @@
 
 import { funcion_d } from "./src/services/funtions_activation"
-
+import { regresion } from "./src/services/regresiom"
+let errorV:number[] = []  
 const m = 3
 const n = 2
 const WE_C1:number[][] = [[0.5, -1, 0.7],[0.3, 0.2, 0.8],[1, 0.1, 0.9]]
 const U1 :number[] = [0.5, 0.6, 1]
 const NumC1= 3
+const erNo:number[] = [-0.0125,0.0059]
+let errorNo:number[] = []
 /*
    WEC1=[[0.5, 1, 0.7],
    [0.3, 0.2, W0.5],
@@ -37,7 +40,7 @@ const funcio_Act = {
 }
 // Funcion que hace el calculo de la funcion de activacion
 const Hi = (X:number[],U1:number[], Pesos:number[][],entrada:number,capa_Act:number,funcion:number ):number[] => {
-    let U2:number[] = []
+    let result:number[] = []
     for (let i = 0; i < capa_Act; i++) {
         let h1 = 0
         for (let j = 0; j < entrada; j++) {
@@ -45,20 +48,20 @@ const Hi = (X:number[],U1:number[], Pesos:number[][],entrada:number,capa_Act:num
         }
         h1 = h1 -U1[i]   
         h1 = funcion_d(funcion, h1)
-        U2.push(h1)
+        result.push(parseFloat(h1.toFixed(5)))
     }
-    return U2
+    return result
 }
 // Funcion que hace encuentra el error lineal
 const error_lineal = (yd:number[],yr:number[]):number[]=>{
 
-    let error:number[] = []
     for (let i = 0; i < yd.length; i++) {
-        error.push(yd[i] - yr[i])
+        let result:number = yd[i] - yr[i]
+        errorV.push(parseFloat(result.toFixed(3)))
     }
-    return error
+    return errorV
 }
-// 
+
 
 // 1 , -1.5 , 0.6
 const result = Hi(patrones, U1, WE_C1,3,3,1)
@@ -68,4 +71,6 @@ console.log(result2);
 const result3 = Hi(result2, U3, WC2_S, 2, 2,3)
 console.log(result3);
 const error = error_lineal([0, 0], result3)
-console.log("El error lineal: ",error);
+console.log("El error lineal: ",errorV);
+errorNo = regresion(errorV,WC2_S)
+console.log(errorNo);

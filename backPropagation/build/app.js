@@ -74,6 +74,7 @@ const Hi = (X, U1, Pesos, entrada, capa_Act, funcion) => {
 };
 // Funcion que hace encuentra el error lineal
 const error_lineal = (yd, yr) => {
+    errorV = [];
     for (let i = 0; i < yd.length; i++) {
         let result = yd[i] - yr[i];
         errorV.push(parseFloat(result.toFixed(3)));
@@ -82,15 +83,24 @@ const error_lineal = (yd, yr) => {
 };
 const main = (capas) => {
     let vector = [];
+    let vectorYd = [];
     let x = vector;
+    let errorLineal = [];
     const patrones = [[1, 0, 1], [0, 1, 1], [1, 0, 1], [0, 1, 0]];
+    const yd = [[0, 0], [0, 1], [1, 0], [1, 1]];
     for (let i = 0; i < patrones.length; i++) {
+        errorLineal = [];
         for (let j = 0; j < m; j++) {
             vector[j] = patrones[i][j]; // presentar patron por patron
         }
+        for (let k = 0; k < n; k++) {
+            vectorYd[k] = yd[i][k]; // salidas esperadas 
+        }
         console.log("patron presentado: ", vector);
+        console.log("Salida esperada", vectorYd);
         let x = vector;
         let y = 0;
+        // progreso entre las capas 
         capas.forEach(capa => {
             console.log("x: ", capa.pesos);
             console.log("u: ", capa.umbrales);
@@ -100,6 +110,9 @@ const main = (capas) => {
             x = salida;
             y++;
         });
+        errorLineal = error_lineal(vectorYd, x);
+        console.log("Este es el error lineal", errorLineal);
+        // guardar error linal pensado para utilizarlo mas adelante errorLineales = []
     }
 };
 let capas = Object.values(datosRedNeuronal);

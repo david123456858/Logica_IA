@@ -15,6 +15,7 @@ const lineal = (suma:number):number =>{
 }
 export const funcion_d = (funcion:number,suma:number):number=>{
 
+    // hacer lo de la derivada
     if(funcion === 1){
         return sigmoide(suma)
     }else if(funcion === 2){
@@ -22,6 +23,6 @@ export const funcion_d = (funcion:number,suma:number):number=>{
     }else if(funcion === 3){ 
         return seno(suma)
     }else{
-        return lineal(suma)
+        return lineal(suma) //falta definir esta formula
     }
 }

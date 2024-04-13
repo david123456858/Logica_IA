@@ -77,7 +77,7 @@ const Hi = (X:number[],U1:number[], Pesos:number[][],entrada:number,capa_Act:num
 }
 // Funcion que hace encuentra el error lineal
 const error_lineal = (yd:number[],yr:number[]):number[]=>{
-
+    errorV = []
     for (let i = 0; i < yd.length; i++) {
         let result:number = yd[i] - yr[i]
         errorV.push(parseFloat(result.toFixed(3)))
@@ -87,14 +87,22 @@ const error_lineal = (yd:number[],yr:number[]):number[]=>{
 
 const main =(capas: { pesos: number[][], umbrales: number[] }[])=>{
     let vector:number[] = []
+    let vectorYd:number[] = []
     let x = vector
-
+    let errorLineal:number[] = []
     const patrones: number[][] = [[1,0,1],[0,1,1],[1,0,1],[0,1,0]]
+    const yd:number[][] = [[0,0],[0,1],[1,0],[1,1]] 
     for (let i = 0; i < patrones.length; i++) {
+      errorLineal = []
         for (let j = 0;j < m; j++) {
-            vector[j] = patrones[i][j] // presentar patron por patron
+            vector[j] = patrones[i][j]// presentar patron por patron
+        }
+        for (let k = 0; k < n; k++) {
+          vectorYd[k] = yd[i][k]// salidas esperadas 
         }
         console.log("patron presentado: ",vector);
+        console.log("Salida esperada",vectorYd);
+        
         let x = vector
         let y = 0
         // progreso entre las capas 
@@ -107,10 +115,17 @@ const main =(capas: { pesos: number[][], umbrales: number[] }[])=>{
             x = salida
             y++
         })
+        errorLineal = error_lineal(vectorYd,x)
+        console.log("Este es el error lineal",errorLineal);
+        
+        // guardar error linal pensado para utilizarlo mas adelante errorLineales = []
     }
+    
 }
 let capas = Object.values(datosRedNeuronal)
 main(capas)
+
+
 // 1 ,- -1.5 , 0.6
 // const result = Hi(patrones, U1, WE_C1,3,3,1)
 // console.log(result);

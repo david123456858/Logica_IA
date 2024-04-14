@@ -3,25 +3,16 @@ export const regresion = (error_lineal:number[],W:number[][]):number[]=>{
     let regres:number[] = [];
     const numSalidas = W.length; // Número de salidas
     const numEntradas = W[0].length; // Número de entradas
-    console.log("numero",numSalidas, numEntradas);
+    // console.log("numero",numSalidas, numEntradas);
     // ayudame hallar el error no lineal  
     for(let i=0; i<numSalidas; i++){
         let suma = 0;
-        console.log("antes de: ",suma);
-        
+    
         for(let j=0; j<numEntradas; j++){
             suma += (error_lineal[j])*W[i][j];
-            console.log("error: ",error_lineal[j]);
-            console.log("w: ", W[i][j]);
-            console.log(`suma = ${error_lineal[j]}  * ${W[i][j]} =${(error_lineal[j])*W[i][j]}`);  
         }
-        console.log("despues de: ",suma);
-
         regres.push(parseFloat(suma.toFixed(5)));
-        
     }
-    
-    
     return regres;
 }
 /*

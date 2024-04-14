@@ -78,12 +78,12 @@ const error_lineal = (yd: number[], yr: number[]): number[] => {
   }
   return errorV;
 };
-
+let errorLineal: number[] = [];
 const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
   let vector: number[] = [];
   let vectorYd: number[] = [];
   let x = vector;
-  let errorLineal: number[] = [];
+  errorLineal = [];
   const patrones: number[][] = [
     [1, 0, 1],
     // [0, 1, 1],
@@ -165,7 +165,7 @@ const nuevosW = (
   // const patrones: number[][] = [
   //   [1, 0, 1],
   // ];
-  let pesosNuevos: number[][]=w;
+  let pesosNuevos: number[][]= w;
   for (let j = 0; j < w[0].length; j++) {
     for (let i = 0; i < w.length; i++) {
       // console.log("W:", w[i][j]);
@@ -174,18 +174,55 @@ const nuevosW = (
           errorsNo[numeroCapa].errorNo[j]
         }  * ${arrayH[numeroSalida].h[j]} * ${patrones[i]} `
       );
-      // pesosNuevos[i][j] =
-      //   w[i][j] +
-      //   2 *
-      //     rata *
-      //     errorsNo[numeroCapa].errorNo[j] *
-      //     arrayH[numeroSalida].h[j] *
-      //     patrones[0][i];
+      pesosNuevos[i][j] =
+        +(w[i][j] +
+        2 *
+          rata *
+          errorsNo[numeroCapa].errorNo[j] *
+          arrayH[numeroSalida].h[j] *
+          patrones[i]).toFixed(5)
     }
   }
-  return pesosNuevos
+  w = pesosNuevos;
+  return w
 };
-
+const nuevosU = (u:number[],rata:number,numeroCapa:number,numeroSalida:number)=>{
+for (let i = 0; i < u.length; i++) {
+  console.log(
+    `U:= ${u[i]} + ${2} * ${rata} * ${
+      errorsNo[numeroCapa].errorNo[i]
+    }  * ${arrayH[numeroSalida].h[i]} * ${1} `
+  );
+  
+}
+}
+const nuevosWS = (
+  w: number[][],
+  rata: number,
+  numeroCapa: number,
+  numeroSalida: number,
+  patrones:number[]) =>{
+    let pesosNuevos: number[][]=w;
+    for (let j = 0; j < w[0].length; j++) {
+      for (let i = 0; i < w.length; i++) {
+        // console.log("W:", w[i][j]);
+        console.log(
+          `W:= ${w[i][j]} + ${2} * ${rata} * ${
+            errorLineal[i]
+          }  * ${arrayH[numeroSalida].h[j]} * ${patrones[i]} `
+        );
+        pesosNuevos[i][j] =
+          +(w[i][j] +
+          2 *
+            rata *
+            errorsNo[numeroCapa].errorNo[j] *
+            arrayH[numeroSalida].h[j] *
+            patrones[i]).toFixed(5)
+      }
+    }
+    w = pesosNuevos;
+    return w
+}
 const erroPatron = (errorLineal: number[], n: number) => {
   let suma = 0;
   for (let i = 0; i < errorLineal.length; i++) {
@@ -194,10 +231,13 @@ const erroPatron = (errorLineal: number[], n: number) => {
 
   return +(suma / n).toFixed(5);
 };
+
 let capas = Object.values(datosRedNeuronal);
 
 main(capas);
 console.log(nuevosW(capas[2].pesos, 0.7, 1, 0,[1,0,1]));
+nuevosU(capas[2].umbrales, 0.7, 1, 0);
+
 
 
 /*las H [

@@ -7,12 +7,19 @@ function derivaSigmoide(x: number) {
 const tanh = (suma: number): number => {
   // estoy esperando que me ayudes con la tangente hipérbolica
   const tanH = Math.tanh(suma)
-  return 1 - tanH * tanH; // derivada
+  return tanH; // derivada
 };
+const derivadaTanH = (suma: number): number => {
+  return 1 - Math.tanh(suma) * Math.tanh(suma);
+}
 const seno = (suma: number): number => {
   suma = suma * (Math.PI / 180);
-  return Math.cos(Math.sin(suma));//derivada seno
+  return Math.sin(suma)//derivada seno
 };
+const derivadaSeno = (suma: number): number => {
+  suma = suma * (Math.PI / 180);
+  return -Math.sin(Math.sin(suma)) * Math.cos(suma);
+}
 const lineal = (suma: number): number => {
   return suma;
 };

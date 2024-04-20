@@ -1,6 +1,7 @@
 import { funcion_D, funcion_d } from "./src/services/funtions_activation";
 import { regresion } from "./src/services/regresiom";
 import { errorNoLineal } from "./src/services/erroresNoLineales";
+import { error, table } from "console";
 const datosRedNeuronal = {
   capa0: {
     pesos: [
@@ -139,16 +140,12 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
     capas.forEach((capa) => {
       if (cont == capas.length - 1) return;
       errorNo = regresion(e, capa.pesos);
-      // console.log("Este es el error no lineal", errorNo);
+      //console.log("Este es el error no lineal", errorNo);
       errorsNo.push({ errorNo: errorNo });
       e = errorNo;
       cont++;
     });
-
-
-    cont = 0;
     errorsNo.reverse()
-    // errorNo.reverse()
     capas.reverse()
     // EntrdasT = [[1,0,0],[hi],[hl]]
     let newSalidas = [
@@ -158,38 +155,26 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
 
     ]
     y = 0
+    let contW = 0
+    let contH = 0
     capas.forEach((capa) => {
-      let c = 0
+      if(y === 0){
+        console.log("Entre en la primer peso")
+        const wNew = nuevosW(capa.pesos, 0.7, y, vector, vectorFuncio[y]);
+      }else if (contH <= errorsNo.length - 1){
+        console.log("tamañp",errorsNo.length - 1)
+        console.log("Entre mas del primer peso")
+        const s = nuevosW(capa.pesos,0.7,y,arrayH[contW].h,vectorFuncio[y])
+        contW++
+      }
       
-      if (cont === capas.length - 1) {
-        //llamo la funcion nuevosWS
-        console.log("ultima capa");
-
-      } else if (y === 0) {
-        console.log("pesos nuevos capa1", nuevosW(capa.pesos, 0.7, cont, cont, vector, vectorFuncio[y]));
-        cont++
-      } else {
-          console.log("array h", arrayH)
-          console.log("pesos nuevos capa 2", nuevosW(capa.pesos, 0.7, cont, c, arrayH[c].h, vectorFuncio[y]));
-          c++ 
-        }
-        // cont no me esta avanzando y no se el porque
-
-        console.log("aaa", capa.pesos);
-        console.log("cont", cont);
-
-        console.log("error no lineal invertido", errorsNo);
-        
       
-
-
-
       y++
-      
+      contH++
+      console.log(y)
     })
-
-
-    // guardar error linal pensado para utilizarlo mas adelante errorLineales = []
+    
+ // guardar error linal pensado para utilizarlo mas adelante errorLineales = []
   }
   console.log("error lineal ", errorLineal);
   console.log("error nol", errorsNo);
@@ -198,8 +183,7 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
 const nuevosW = (
   w: number[][],
   rata: number,
-  numeroCapa: number,//0,1
-  numeroSalida: number,//0,1
+  numeroCapa: number,//0,1,//0,1
   patrones: number[],
   funcion: number
 ) => {
@@ -209,17 +193,17 @@ const nuevosW = (
     for (let i = 0; i < w.length; i++) {
       console.log(
         `W:= ${w[i][j]} + ${2} * ${rata} * ${errorsNo[numeroCapa].errorNo[j]
-        }  * ${arrayH[numeroSalida].h[j]} * ${patrones[i]} `
+        }  * ${arrayH[numeroCapa].h[j]} * ${patrones[i]} `
       );
-      console.log("salida HQ", numeroSalida);
-      console.log("salida hi", funcion_D(funcion, arrayH[numeroSalida].h[j]));
+      console.log("salida HQ", numeroCapa);
+      console.log("salida hi", funcion_D(funcion, arrayH[numeroCapa].h[j]));
 
       pesosNuevos[i][j] =
         +(w[i][j] +
           2 *
           rata *
           errorsNo[numeroCapa].errorNo[j] *
-          funcion_D(funcion, arrayH[numeroSalida].h[j]) *
+          funcion_D(funcion, arrayH[numeroCapa].h[j]) *
           patrones[i]).toFixed(5)
     }
   }
@@ -274,10 +258,28 @@ let capas = Object.values(datosRedNeuronal);
 
 main(capas);
 //console.log("ultimo peso",nuevosW(capas[2].pesos, 0.7, 1, 1,[1,0,1],1));
-nuevosU(capas[2].umbrales, 0.7, 1, 0);
+//nuevosU(capas[2].umbrales, 0.7, 1, 0);
 
 
 
+// if (cont === capas.length - 1) {
+      //   //llamo la funcion nuevosWS
+      //   console.log("ultima capa");
+
+      // } else if (y === 0) {
+      //   console.log("pesos nuevos capa1", nuevosW(capa.pesos, 0.7, cont, cont, vector, vectorFuncio[y]));
+      //   cont++
+      // } else {
+      //   console.log("array h", arrayH)
+      //   console.log("pesos nuevos capa 2", nuevosW(capa.pesos, 0.7, cont, c, arrayH[c].h, vectorFuncio[y]));
+      //   c++
+      // }
+      // // cont no me esta avanzando y no se el porque
+
+      // console.log("aaa", capa.pesos);
+      // console.log("cont", cont)
+      // console.log("error no lineal invertido", errorsNo);
+      // y++
 /*las H [
   { h: [ 0.73106, 0.18243, 0.64566 ] },
   { h: [ 0.63312, -0.37959 ] },

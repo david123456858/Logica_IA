@@ -1,4 +1,4 @@
-import { funcion_d } from "./src/services/funtions_activation";
+import { funcion_D, funcion_d } from "./src/services/funtions_activation";
 import { regresion } from "./src/services/regresiom";
 import { errorNoLineal } from "./src/services/erroresNoLineales";
 const datosRedNeuronal = {
@@ -30,6 +30,7 @@ let errorV: number[] = [];
 const m = 3;
 const n = 2;
 let errorNo: number[] = [];
+let EntradasT: number[][] = []
 interface error {
   errorNo: number[];
 }
@@ -82,6 +83,7 @@ let errorLineal: number[] = [];
 const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
   let vector: number[] = [];
   let vectorYd: number[] = [];
+  let EntradasT: number[] = []
   let x = vector;
   errorLineal = [];
   const patrones: number[][] = [
@@ -125,13 +127,14 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
       arrayH.push({ h: salida });
       console.log("entradas: ", x.length);
       x = salida;
+
       y++;
     });
     errorLineal = error_lineal(vectorYd, x);
     console.log("error patron: ", erroPatron(errorLineal, vectorYd.length));
     // console.log("Este es el error lineal", errorLineal);
-    capas.reverse();
-    let e = errorLineal;
+    capas.reverse()
+    let e = errorLineal
     let cont = 0;
     capas.forEach((capa) => {
       if (cont == capas.length - 1) return;
@@ -142,6 +145,50 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
       cont++;
     });
 
+
+    cont = 0;
+    errorsNo.reverse()
+    // errorNo.reverse()
+    capas.reverse()
+    // EntrdasT = [[1,0,0],[hi],[hl]]
+    let newSalidas = [
+
+      [patrones[0]],
+      [arrayH]
+
+    ]
+    y = 0
+    capas.forEach((capa) => {
+      let c = 0
+      
+      if (cont === capas.length - 1) {
+        //llamo la funcion nuevosWS
+        console.log("ultima capa");
+
+      } else if (y === 0) {
+        console.log("pesos nuevos capa1", nuevosW(capa.pesos, 0.7, cont, cont, vector, vectorFuncio[y]));
+        cont++
+      } else {
+          console.log("array h", arrayH)
+          console.log("pesos nuevos capa 2", nuevosW(capa.pesos, 0.7, cont, c, arrayH[c].h, vectorFuncio[y]));
+          c++ 
+        }
+        // cont no me esta avanzando y no se el porque
+
+        console.log("aaa", capa.pesos);
+        console.log("cont", cont);
+
+        console.log("error no lineal invertido", errorsNo);
+        
+      
+
+
+
+      y++
+      
+    })
+
+
     // guardar error linal pensado para utilizarlo mas adelante errorLineales = []
   }
   console.log("error lineal ", errorLineal);
@@ -151,77 +198,68 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
 const nuevosW = (
   w: number[][],
   rata: number,
-  numeroCapa: number,
-  numeroSalida: number,
-  patrones:number[]
+  numeroCapa: number,//0,1
+  numeroSalida: number,//0,1
+  patrones: number[],
+  funcion: number
 ) => {
-  // const w = [
-  //   [0.5, -1, 0.7],
-  //   [0.3, 0.2, 0.8],
-  //   [1, 0.1, 0.9],
-  // ];
-  console.log(w);
-
-  // const patrones: number[][] = [
-  //   [1, 0, 1],
-  // ];
-  let pesosNuevos: number[][]= w;
+  console.log(errorNo)
+  let pesosNuevos: number[][] = w;
   for (let j = 0; j < w[0].length; j++) {
     for (let i = 0; i < w.length; i++) {
-      // console.log("W:", w[i][j]);
       console.log(
-        `W:= ${w[i][j]} + ${2} * ${rata} * ${
-          errorsNo[numeroCapa].errorNo[j]
+        `W:= ${w[i][j]} + ${2} * ${rata} * ${errorsNo[numeroCapa].errorNo[j]
         }  * ${arrayH[numeroSalida].h[j]} * ${patrones[i]} `
       );
+      console.log("salida HQ", numeroSalida);
+      console.log("salida hi", funcion_D(funcion, arrayH[numeroSalida].h[j]));
+
       pesosNuevos[i][j] =
         +(w[i][j] +
-        2 *
+          2 *
           rata *
           errorsNo[numeroCapa].errorNo[j] *
-          arrayH[numeroSalida].h[j] *
+          funcion_D(funcion, arrayH[numeroSalida].h[j]) *
           patrones[i]).toFixed(5)
     }
   }
   w = pesosNuevos;
   return w
 };
-const nuevosU = (u:number[],rata:number,numeroCapa:number,numeroSalida:number)=>{
-for (let i = 0; i < u.length; i++) {
-  console.log(
-    `U:= ${u[i]} + ${2} * ${rata} * ${
-      errorsNo[numeroCapa].errorNo[i]
-    }  * ${arrayH[numeroSalida].h[i]} * ${1} `
-  );
-  
-}
+const nuevosU = (u: number[], rata: number, numeroCapa: number, numeroSalida: number) => {
+  for (let i = 0; i < u.length; i++) {
+    console.log(
+      `U:= ${u[i]} + ${2} * ${rata} * ${errorsNo[numeroCapa].errorNo[i]
+      }  * ${arrayH[numeroSalida].h[i]} * ${1} `
+    );
+
+  }
 }
 const nuevosWS = (
   w: number[][],
   rata: number,
   numeroCapa: number,
   numeroSalida: number,
-  patrones:number[]) =>{
-    let pesosNuevos: number[][]=w;
-    for (let j = 0; j < w[0].length; j++) {
-      for (let i = 0; i < w.length; i++) {
-        // console.log("W:", w[i][j]);
-        console.log(
-          `W:= ${w[i][j]} + ${2} * ${rata} * ${
-            errorLineal[i]
-          }  * ${arrayH[numeroSalida].h[j]} * ${patrones[i]} `
-        );
-        pesosNuevos[i][j] =
-          +(w[i][j] +
+  patrones: number[]) => {
+  let pesosNuevos: number[][] = w;
+  for (let j = 0; j < w[0].length; j++) {
+    for (let i = 0; i < w.length; i++) {
+      // console.log("W:", w[i][j]);
+      console.log(
+        `W:= ${w[i][j]} + ${2} * ${rata} * ${errorLineal[i]
+        }  * ${arrayH[numeroSalida].h[j]} * ${patrones[i]} `
+      );
+      pesosNuevos[i][j] =
+        +(w[i][j] +
           2 *
-            rata *
-            errorsNo[numeroCapa].errorNo[j] *
-            arrayH[numeroSalida].h[j] *
-            patrones[i]).toFixed(5)
-      }
+          rata *
+          errorLineal[i] *
+          arrayH[numeroSalida].h[j])
+
     }
-    w = pesosNuevos;
-    return w
+  }
+  w = pesosNuevos;
+  return w
 }
 const erroPatron = (errorLineal: number[], n: number) => {
   let suma = 0;
@@ -235,7 +273,7 @@ const erroPatron = (errorLineal: number[], n: number) => {
 let capas = Object.values(datosRedNeuronal);
 
 main(capas);
-console.log(nuevosW(capas[2].pesos, 0.7, 1, 0,[1,0,1]));
+//console.log("ultimo peso",nuevosW(capas[2].pesos, 0.7, 1, 1,[1,0,1],1));
 nuevosU(capas[2].umbrales, 0.7, 1, 0);
 
 
@@ -244,4 +282,8 @@ nuevosU(capas[2].umbrales, 0.7, 1, 0);
   { h: [ 0.73106, 0.18243, 0.64566 ] },
   { h: [ 0.63312, -0.37959 ] },
   { h: [ 0.0215, -0.01635 ] }
+  error nol [
+  { errorNo: [ -0.0125, 0.0059 ] },
+  { errorNo: [ -0.00191, -0.00139, -0.0184 ] }
+]
 ] */

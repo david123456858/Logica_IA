@@ -157,28 +157,33 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
     y = 0
     let contW = 0
     let contH = 0
+    //CAMBIOS DE PESOS
     capas.forEach((capa) => {
-      if(y === 0){
+      if (contH === capas.length - 1) {
+        console.log("Entre en la ultima capa")
+        const nuevWs = nuevosWS(capa.pesos, 0.7, contW);
+      }
+
+      if (y === 0) {
         console.log("Entre en la primer peso")
         const wNew = nuevosW(capa.pesos, 0.7, y, vector, vectorFuncio[y]);
-      }else if (contH <= errorsNo.length - 1){
-        console.log("tamañp",errorsNo.length - 1)
+      } else if (contH <= errorsNo.length - 1) {
+        console.log("tamañp", errorsNo.length - 1)
         console.log("Entre mas del primer peso")
-        const s = nuevosW(capa.pesos,0.7,y,arrayH[contW].h,vectorFuncio[y])
+        const s = nuevosW(capa.pesos, 0.7, y, arrayH[contW].h, vectorFuncio[y])
         contW++
       }
-      
-      
       y++
       contH++
       console.log(y)
     })
+
     
- // guardar error linal pensado para utilizarlo mas adelante errorLineales = []
   }
   console.log("error lineal ", errorLineal);
   console.log("error nol", errorsNo);
   console.log("las H", arrayH);
+  console.log("pesos nuevos", capas[0].pesos);
 };
 const nuevosW = (
   w: number[][],
@@ -222,16 +227,15 @@ const nuevosU = (u: number[], rata: number, numeroCapa: number, numeroSalida: nu
 const nuevosWS = (
   w: number[][],
   rata: number,
-  numeroCapa: number,
-  numeroSalida: number,
-  patrones: number[]) => {
+  numeroSalida: number
+) => {
   let pesosNuevos: number[][] = w;
   for (let j = 0; j < w[0].length; j++) {
     for (let i = 0; i < w.length; i++) {
       // console.log("W:", w[i][j]);
       console.log(
         `W:= ${w[i][j]} + ${2} * ${rata} * ${errorLineal[i]
-        }  * ${arrayH[numeroSalida].h[j]} * ${patrones[i]} `
+        }  * ${arrayH[numeroSalida].h[j]}`
       );
       pesosNuevos[i][j] =
         +(w[i][j] +
@@ -263,23 +267,23 @@ main(capas);
 
 
 // if (cont === capas.length - 1) {
-      //   //llamo la funcion nuevosWS
-      //   console.log("ultima capa");
+//   //llamo la funcion nuevosWS
+//   console.log("ultima capa");
 
-      // } else if (y === 0) {
-      //   console.log("pesos nuevos capa1", nuevosW(capa.pesos, 0.7, cont, cont, vector, vectorFuncio[y]));
-      //   cont++
-      // } else {
-      //   console.log("array h", arrayH)
-      //   console.log("pesos nuevos capa 2", nuevosW(capa.pesos, 0.7, cont, c, arrayH[c].h, vectorFuncio[y]));
-      //   c++
-      // }
-      // // cont no me esta avanzando y no se el porque
+// } else if (y === 0) {
+//   console.log("pesos nuevos capa1", nuevosW(capa.pesos, 0.7, cont, cont, vector, vectorFuncio[y]));
+//   cont++
+// } else {
+//   console.log("array h", arrayH)
+//   console.log("pesos nuevos capa 2", nuevosW(capa.pesos, 0.7, cont, c, arrayH[c].h, vectorFuncio[y]));
+//   c++
+// }
+// // cont no me esta avanzando y no se el porque
 
-      // console.log("aaa", capa.pesos);
-      // console.log("cont", cont)
-      // console.log("error no lineal invertido", errorsNo);
-      // y++
+// console.log("aaa", capa.pesos);
+// console.log("cont", cont)
+// console.log("error no lineal invertido", errorsNo);
+// y++
 /*las H [
   { h: [ 0.73106, 0.18243, 0.64566 ] },
   { h: [ 0.63312, -0.37959 ] },

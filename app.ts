@@ -38,8 +38,8 @@ interface error {
 interface h {
   h: number[];
 }
-const errorsNo: error[] = []; //errores lineales capa 1 y capa 2
-const arrayH: h[] = [];
+let errorsNo: error[] = []; //errores lineales capa 1 y capa 2
+let arrayH: h[] = [];
 
 // estoy construyenfo el algoritmo de backPropagation ayudame en la logica
 const funcio_Act = {
@@ -76,31 +76,34 @@ const error_lineal = (yd: number[], yr: number[]): number[] => {
   errorV = [];
   for (let i = 0; i < yd.length; i++) {
     let result: number = yd[i] - yr[i];
-    errorV.push(parseFloat(result.toFixed(3)));
+    errorV.push(parseFloat(result.toFixed(5)));
   }
   return errorV;
 };
+let Ep: number[] = []
 let errorLineal: number[] = [];
 const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
   let vector: number[] = [];
   let vectorYd: number[] = [];
   let EntradasT: number[] = []
+
   let x = vector;
   errorLineal = [];
   const patrones: number[][] = [
     [1, 0, 1],
-    // [0, 1, 1],
-    // [1, 0, 1],
-    // [0, 1, 0],
+    [0, 1, 1],
+    [1, 0, 1],
+    [0, 1, 0],
   ];
   const yd: number[][] = [
     [0, 0],
-    // [0, 1],
-    // [1, 0],
-    // [1, 1],
+    [0, 1],
+    [1, 0],
+    [1, 1],
   ];
   for (let i = 0; i < patrones.length; i++) {
     errorLineal = [];
+
     for (let j = 0; j < m; j++) {
       vector[j] = patrones[i][j]; // presentar patron por patron
     }
@@ -125,15 +128,17 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
         capa.umbrales.length,
         vectorFuncio[y]
       );
-      console.log("salida: ", salida);
+      //console.log("salida: ", salida);
       arrayH.push({ h: salida });
-      console.log("entradas: ", x.length);
+      //console.log("entradas: ", x.length);
       x = salida;
 
       y++;
     });
     errorLineal = error_lineal(vectorYd, x);
-    console.log("error patron: ", erroPatron(errorLineal, vectorYd.length));
+
+    //console.log("error patron: ", erroPatron(errorLineal, vectorYd.length));
+    Ep.push(erroPatron(errorLineal, vectorYd.length))
     // console.log("Este es el error lineal", errorLineal);
     capas.reverse()
     let e = errorLineal
@@ -163,32 +168,34 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
       if (contH === capas.length - 1) {
         console.log("Entre en la ultima capa")
         const nuevWs = nuevosWS(capa.pesos, 0.7, contW);//C2S
-        const O = nuevosU(capa.umbrales, 0.7, contW, "s")//Us
-        console.log("nuevos umbrales", O)
+        const O = nuevosU(capa.umbrales, 0.7, contW, "s", vectorFuncio[contH])//Us
+        console.log("nuevos umbrales salida", O)
       }
       if (y === 0) {
         console.log("Entre en la primer peso")
         const wNew = nuevosW(capa.pesos, 0.7, y, vector, vectorFuncio[y]);//CEC1
-        const uNew = nuevosU(capa.umbrales, 0.7, y, "n");//U1
+        const uNew = nuevosU(capa.umbrales, 0.7, y, "n", vectorFuncio[y]);//U1
         console.table(uNew)
       } else if (contH <= errorsNo.length - 1) {
         console.log("tamañp", errorsNo.length - 1)
         console.log("Entre mas del primer peso")
         const s = nuevosW(capa.pesos, 0.7, y, arrayH[contW].h, vectorFuncio[y])//C1C2
-        const u = nuevosU(capa.umbrales, 0.7, y, "n")//U2
+        const u = nuevosU(capa.umbrales, 0.7, y, "n", vectorFuncio[y])//U2
+        console.log("nuevos umbrales capa", u)
         contW++
       }
       y++
       contH++
       console.log(y)
     })
-
-
+    console.log("error lineal ",i, errorLineal);
+    console.log("error nol",i, errorsNo);
+    console.log("las H",i, arrayH);
+    console.log("pesos nuevos",i, capas[0].pesos);
+    errorsNo = []
+    arrayH = []
   }
-  console.log("error lineal ", errorLineal);
-  console.log("error nol", errorsNo);
-  console.log("las H", arrayH);
-  console.log("pesos nuevos", capas[0].pesos);
+  console.table(Ep)
 };
 const nuevosW = (
   w: number[][],
@@ -220,7 +227,9 @@ const nuevosW = (
   w = pesosNuevos;
   return w
 };
-const nuevosU = (u: number[], rata: number, numeroCapa: number, op: string) => {
+const nuevosU = (u: number[], rata: number, numeroCapa: number, op: string, funcion: number) => {
+  console.log("FUNCION U", funcion);
+
   let nuevoUmbrales: number[] = u;
   if (op === "n") {
 
@@ -230,7 +239,7 @@ const nuevosU = (u: number[], rata: number, numeroCapa: number, op: string) => {
         }  * ${arrayH[numeroCapa].h[i]} * ${1} `
       );
 
-      nuevoUmbrales[i] = +(u[i] + 2 * rata * errorsNo[numeroCapa].errorNo[i] * arrayH[numeroCapa].h[i] * 1).toFixed(5)
+      nuevoUmbrales[i] = +(u[i] + 2 * rata * errorsNo[numeroCapa].errorNo[i] * funcion_D(arrayH[numeroCapa].h[i], funcion) * 1).toFixed(5)
     }
     u = nuevoUmbrales;
     return u
@@ -245,8 +254,6 @@ const nuevosU = (u: number[], rata: number, numeroCapa: number, op: string) => {
     u = nuevoUmbrales;
     return u
   }
-
-
 }
 const nuevosWS = (
   w: number[][],
@@ -281,39 +288,5 @@ const erroPatron = (errorLineal: number[], n: number) => {
 
   return +(suma / n).toFixed(5);
 };
-
 let capas = Object.values(datosRedNeuronal);
-
 main(capas);
-//console.log("ultimo peso",nuevosW(capas[2].pesos, 0.7, 1, 1,[1,0,1],1));
-//nuevosU(capas[2].umbrales, 0.7, 1, 0);
-
-
-
-// if (cont === capas.length - 1) {
-//   //llamo la funcion nuevosWS
-//   console.log("ultima capa");
-
-// } else if (y === 0) {
-//   console.log("pesos nuevos capa1", nuevosW(capa.pesos, 0.7, cont, cont, vector, vectorFuncio[y]));
-//   cont++
-// } else {
-//   console.log("array h", arrayH)
-//   console.log("pesos nuevos capa 2", nuevosW(capa.pesos, 0.7, cont, c, arrayH[c].h, vectorFuncio[y]));
-//   c++
-// }
-// // cont no me esta avanzando y no se el porque
-
-// console.log("aaa", capa.pesos);
-// console.log("cont", cont)
-// console.log("error no lineal invertido", errorsNo);
-// y++
-/*las H [
-  { h: [ 0.73106, 0.18243, 0.64566 ] },
-  { h: [ 0.63312, -0.37959 ] },
-  { h: [ 0.0215, -0.01635 ] }
-  error nol [
-  { errorNo: [ -0.0125, 0.0059 ] },
-  { errorNo: [ -0.00191, -0.00139, -0.0184 ] }
-]
-] */

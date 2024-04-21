@@ -116,6 +116,7 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
     capas.forEach((capa) => {
       console.log("x: ", capa.pesos);
       console.log("u: ", capa.umbrales);
+
       const salida = Hi(
         x,
         capa.umbrales,
@@ -161,16 +162,20 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
     capas.forEach((capa) => {
       if (contH === capas.length - 1) {
         console.log("Entre en la ultima capa")
-        const nuevWs = nuevosWS(capa.pesos, 0.7, contW);
+        const nuevWs = nuevosWS(capa.pesos, 0.7, contW);//C2S
+        const O = nuevosU(capa.umbrales, 0.7, contW, "s")//Us
+        console.log("nuevos umbrales", O)
       }
-
       if (y === 0) {
         console.log("Entre en la primer peso")
-        const wNew = nuevosW(capa.pesos, 0.7, y, vector, vectorFuncio[y]);
+        const wNew = nuevosW(capa.pesos, 0.7, y, vector, vectorFuncio[y]);//CEC1
+        const uNew = nuevosU(capa.umbrales, 0.7, y, "n");//U1
+        console.table(uNew)
       } else if (contH <= errorsNo.length - 1) {
         console.log("tamañp", errorsNo.length - 1)
         console.log("Entre mas del primer peso")
-        const s = nuevosW(capa.pesos, 0.7, y, arrayH[contW].h, vectorFuncio[y])
+        const s = nuevosW(capa.pesos, 0.7, y, arrayH[contW].h, vectorFuncio[y])//C1C2
+        const u = nuevosU(capa.umbrales, 0.7, y, "n")//U2
         contW++
       }
       y++
@@ -178,7 +183,7 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[]) => {
       console.log(y)
     })
 
-    
+
   }
   console.log("error lineal ", errorLineal);
   console.log("error nol", errorsNo);
@@ -215,14 +220,33 @@ const nuevosW = (
   w = pesosNuevos;
   return w
 };
-const nuevosU = (u: number[], rata: number, numeroCapa: number, numeroSalida: number) => {
-  for (let i = 0; i < u.length; i++) {
-    console.log(
-      `U:= ${u[i]} + ${2} * ${rata} * ${errorsNo[numeroCapa].errorNo[i]
-      }  * ${arrayH[numeroSalida].h[i]} * ${1} `
-    );
+const nuevosU = (u: number[], rata: number, numeroCapa: number, op: string) => {
+  let nuevoUmbrales: number[] = u;
+  if (op === "n") {
 
+    for (let i = 0; i < u.length; i++) {
+      console.log(
+        `U:= ${u[i]} + ${2} * ${rata} * ${errorsNo[numeroCapa].errorNo[i]
+        }  * ${arrayH[numeroCapa].h[i]} * ${1} `
+      );
+
+      nuevoUmbrales[i] = +(u[i] + 2 * rata * errorsNo[numeroCapa].errorNo[i] * arrayH[numeroCapa].h[i] * 1).toFixed(5)
+    }
+    u = nuevoUmbrales;
+    return u
+  } else {
+    for (let i = 0; i < u.length; i++) {
+      console.log(
+        `Us:= ${u[i]} + ${2} * ${rata} * ${errorLineal[i]}  * ${arrayH[numeroCapa].h[i]} * ${1} `
+      );
+
+      nuevoUmbrales[i] = +(u[i] + 2 * rata * errorLineal[i] * arrayH[numeroCapa].h[i] * 1).toFixed(5)
+    }
+    u = nuevoUmbrales;
+    return u
   }
+
+
 }
 const nuevosWS = (
   w: number[][],

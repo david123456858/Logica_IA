@@ -315,4 +315,4 @@ const erroPatron = (errorLineal: number[], n: number) => {
   return +(suma / n).toFixed(5);
 };
 let capas = Object.values(datosRedNeuronal);
-main(capas,1000,0.3);
+main(capas,1,0.6);

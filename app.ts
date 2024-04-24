@@ -194,17 +194,23 @@ const main = (capas: { pesos: number[][]; umbrales: number[] }[],numiteraciones:
         contH++
         console.log(y)
       })
-      console.log("error lineal ",i, errorLineal);
-      console.log("error nol",i, errorsNo);
-      console.log("las H",i, arrayH);
-      console.log("pesos nuevos",i, capas[0].pesos);
+      //console.log("error lineal ",i, errorLineal);
+      //console.log("error nol",i, errorsNo);
+      //console.log("las H",i, arrayH);
+      //console.log("pesos nuevos",i, capas[0].pesos);
       errorsNo = []
       arrayH = []
     }
     console.table(Ep)
     errorIte = calculateErrorI(Ep)
-    console.log("errorIte", errorIte)
-  
+    //console.log("errorIte", errorIte)
+    let j = 0
+    capas.forEach((capa)=>{
+      j++
+      console.log("pesos nuevos capa",j, capa.pesos);
+      console.log("umbrales nuevos capa",j, capa.umbrales);
+    })
+    
     tError.push(+errorIte.toFixed(1))
     if (errorIte<=erroPermitido){
       console.log("Termino el entrenamiento :",errorIte)
@@ -315,4 +321,4 @@ const erroPatron = (errorLineal: number[], n: number) => {
   return +(suma / n).toFixed(5);
 };
 let capas = Object.values(datosRedNeuronal);
-main(capas,1,0.6);
+main(capas,15,0.6);
